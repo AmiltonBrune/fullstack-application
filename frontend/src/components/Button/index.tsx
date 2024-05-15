@@ -4,8 +4,10 @@ import { Container } from './styles';
 
 type IButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
-const Button = ({ children, ...rest }: IButtonProps) => (
-  <Container {...rest}>{children}</Container>
+const Button = ({ children, disabled, ...rest }: IButtonProps) => (
+  <Container disabled={disabled} {...rest}>
+    {children}
+  </Container>
 );
 
 export default Button;

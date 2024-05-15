@@ -18,4 +18,14 @@ export const Container = styled.button`
   &:hover {
     opacity: 0.7;
   }
+
+  &:disabled,
+  button[disabled] {
+    background-color: ${(props) => props.theme.colors.gray};
+    color: ${(props) => props.theme.colors.white};
+    cursor: not-allowed;
+    &:hover {
+      opacity: 1;
+    }
+  }
 `;
