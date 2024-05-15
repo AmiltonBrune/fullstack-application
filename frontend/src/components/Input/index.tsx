@@ -1,8 +1,8 @@
 import {
   InputHTMLAttributes,
   ReactNode,
-  useEffect,
   useState,
+  useEffect,
   ChangeEvent,
 } from 'react';
 import { LuEye, LuEyeOff } from 'react-icons/lu';
@@ -16,18 +16,23 @@ import {
   Label,
   StyledInput,
 } from './styles';
-import useValidation, { ValidationRules } from '../../hooks/useValidation';
+import useValidation, {
+  DefineFieldProps,
+  ValidationRules,
+} from '../../hooks/useValidation';
+import { FormValues } from '../../context/Form';
 
 interface InputProps {
   label: string;
   type: string;
   placeholder: string;
   icon: ReactNode;
-  iconRight?: ReactNode;
+  iconRight?: boolean;
   validationRules: ValidationRules;
-  value: string;
-  onChange: (value: string) => void;
-  name: string;
+  validFields?: DefineFieldProps;
+  value?: string;
+  onChange?: (value: string) => void;
+  name: keyof FormValues;
 }
 
 type IInputProps = InputProps & InputHTMLAttributes<HTMLInputElement>;
@@ -37,23 +42,27 @@ const Input = ({
   type,
   placeholder,
   icon,
-  iconRight,
+  iconRight = false,
   validationRules,
-  value,
-  onChange,
+  validFields,
+  value: propValue,
+  onChange: propOnChange,
   name,
   ...rest
 }: IInputProps) => {
-  const {
-    value: internalValue,
-    setValue,
-    error,
-    handleChange,
-    validate,
-  } = useValidation('', validationRules);
-
+  const [localValue, setLocalValue] = useState(propValue || '');
   const [inputType, setInputType] = useState(type);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const {
+    value: validatedValue,
+    error,
+    handleChange: handleValidationChange,
+    validate,
+  } = useValidation({
+    name,
+    rules: validationRules,
+    validFields,
+  });
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
@@ -61,13 +70,22 @@ const Input = ({
   };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    handleChange(e);
-    onChange(e.target.value);
+    const { value } = e.target;
+    if (propOnChange) {
+      propOnChange(value);
+    } else {
+      setLocalValue(value);
+    }
+    handleValidationChange(e);
   };
 
   useEffect(() => {
-    setValue(value);
-  }, [value, setValue]);
+    if (typeof propValue === 'string') {
+      setLocalValue(propValue);
+    }
+  }, [propValue]);
+
+  const value = propValue !== undefined ? validatedValue : localValue;
 
   return (
     <InputContainer>
@@ -76,9 +94,10 @@ const Input = ({
         <IconLeft>{icon}</IconLeft>
         <StyledInput
           className='poppins-regular'
+          data-lpignore='true'
           type={inputType}
           placeholder={placeholder}
-          value={internalValue}
+          value={value}
           onChange={handleInputChange}
           onBlur={validate}
           name={name}

@@ -1,10 +1,10 @@
 import { ChangeEvent, FormEvent } from 'react';
 
-import { LuLock, LuMail } from 'react-icons/lu';
+import { LuLock, LuMail, LuUser } from 'react-icons/lu';
 
 import Input from '../../components/Input';
 
-import { Container, Content, Tille, Form } from './styles';
+import { Container, Content, Form } from './styles';
 import ContentBackgroud from '../../components/ContentBackgroud';
 import Logo from '../../components/Logo';
 import { useTheme } from '../../hooks/theme';
@@ -12,17 +12,17 @@ import useWindowSize from '../../hooks/useWindowSize';
 import Button from '../../components/Button';
 import StarTitleAndRedirect from '../../components/StarTitleAndRedirect';
 import { useFormContext } from '../../context/Form';
-import { DefineFieldProps } from '../../hooks/useValidation';
 
 interface FormValues {
   email: string;
   password: string;
+  confirmPassword: string;
+  name: string;
 }
 
-function Signin() {
+function Signup() {
   const { theme } = useTheme();
   const { width } = useWindowSize();
-
   const { state, dispatch, validation } = useFormContext();
 
   const handleChange = (
@@ -38,11 +38,6 @@ function Signin() {
 
   const isValid = Object.values(validation).every((message) => !message);
 
-  const validFields: DefineFieldProps = {
-    email: true,
-    password: true,
-  };
-
   return (
     <Container>
       <ContentBackgroud />
@@ -51,15 +46,24 @@ function Signin() {
           <Logo colorTitle={theme.colors.black} position='center' />
         )}
 
-        <Tille>
-          <StarTitleAndRedirect
-            description='Não tem uma conta? '
-            redirectTo='/register'
-            rediretoToText='cadastre-se'
-            title='Vamos começar'
-          />
-        </Tille>
+        <StarTitleAndRedirect
+          description='Já tem uma conta? '
+          redirectTo='/'
+          rediretoToText='Faça login'
+          title='Vamos começar'
+        />
+
         <Form onSubmit={handleSubmit}>
+          <Input
+            label='Nome'
+            type='text'
+            name='name'
+            placeholder='Digite seu nome'
+            icon={<LuUser size={30} />}
+            validationRules={{ required: true, minLength: 3 }}
+            value={state.name}
+            onChange={(event) => handleChange('name', event)}
+          />
           <Input
             label='Email'
             type='text'
@@ -69,7 +73,6 @@ function Signin() {
             validationRules={{ email: true, required: true }}
             value={state.email}
             onChange={(event) => handleChange('email', event)}
-            validFields={validFields}
           />
           <Input
             label='Senha'
@@ -81,7 +84,17 @@ function Signin() {
             validationRules={{ password: true, required: true }}
             value={state.password}
             onChange={(event) => handleChange('password', event)}
-            validFields={validFields}
+          />
+          <Input
+            label='Confirmar senha'
+            type='password'
+            name='confirmPassword'
+            placeholder='Digite sua senha'
+            icon={<LuLock size={30} />}
+            iconRight={true}
+            validationRules={{ confirmPassword: true, required: true }}
+            value={state.confirmPassword}
+            onChange={(event) => handleChange('confirmPassword', event)}
           />
           <Button type='submit' disabled={!isValid}>
             Entrar
@@ -92,4 +105,4 @@ function Signin() {
   );
 }
 
-export default Signin;
+export default Signup;
