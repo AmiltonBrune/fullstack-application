@@ -7,6 +7,7 @@ declare module 'styled-components' {
     colors: {
       primary: string;
       secondary: string;
+      tertiary: string;
 
       white: string;
       black: string;
@@ -15,6 +16,7 @@ declare module 'styled-components' {
       success: string;
       info: string;
       warning: string;
+     danger: string
     };
   }
 }

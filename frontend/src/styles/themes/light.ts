@@ -4,6 +4,7 @@ const light = {
   colors: {
     primary: '#E71D36',
     secondary: '#2F2E41',
+    tertiary: '#ED5567',
 
     white: '#FDFFFC',
     black: '#011627',
@@ -13,6 +14,7 @@ const light = {
     success: '#28A745',
     info: '#17A2B8',
     warning: '#FFC107',
+    danger: '#DC3545',
   },
 };
 

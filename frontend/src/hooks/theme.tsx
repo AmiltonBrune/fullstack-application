@@ -14,6 +14,7 @@ interface ITheme {
   colors: {
     primary: string;
     secondary: string;
+    tertiary: string;
 
     white: string;
     black: string;
@@ -22,6 +23,7 @@ interface ITheme {
     success: string;
     info: string;
     warning: string;
+    danger: string;
   };
 }
 
@@ -36,7 +38,7 @@ const ThemeProvider = ({ children }: ThemeProviderProps) => {
     const themeSaved = localStorage.getItem('@vidflex:theme');
 
     if (themeSaved) return JSON.parse(themeSaved);
-    else return dark;
+    else return light;
   });
 
   const toggleTheme = () => {
