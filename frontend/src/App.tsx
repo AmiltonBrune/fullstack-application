@@ -4,15 +4,15 @@ import GlobalStyles from './styles/GlobalStyles';
 
 import { useTheme } from './hooks/theme';
 
+import Routes from './routes';
+
 function App() {
   const { theme } = useTheme();
 
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
-      <>
-        <h1 className='poppins-thin'>VidFlex</h1>
-      </>
+      <Routes />
     </ThemeProvider>
   );
 }
