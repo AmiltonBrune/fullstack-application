@@ -19,9 +19,18 @@ export const LogoContainer = styled.div<LogoContainerProps>`
 export const Title = styled.span<TitleProps>`
   font-size: 36px;
   color: ${(props) => props.colorTitle};
+
+  @media (max-width: 768px) {
+    font-size: 30px;
+  }
 `;
 
 export const LogoImage = styled.img`
   width: 50px;
   height: 50px;
+
+  @media (max-width: 768px) {
+    width: 35px;
+    height: 35px;
+  }
 `;

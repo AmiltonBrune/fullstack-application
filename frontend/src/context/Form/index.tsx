@@ -12,6 +12,11 @@ interface FormValues {
   password: string;
   confirmPassword: string;
   name: string;
+  title: string;
+  description: string;
+  url: string;
+  catgegories: string;
+  thumbnail: string;
 }
 
 interface FormState {
@@ -25,6 +30,11 @@ const initialState: FormState = {
     password: '',
     confirmPassword: '',
     name: '',
+    title: '',
+    description: '',
+    url: '',
+    catgegories: '',
+    thumbnail: '',
   },
   validation: {},
 };
@@ -34,7 +44,20 @@ type FormAction =
       type: 'SET_VALUE';
       payload: {
         field: keyof FormValues;
-        value: string | ChangeEvent<HTMLInputElement>;
+        value:
+          | string
+          | ChangeEvent<HTMLInputElement>
+          | ChangeEvent<HTMLTextAreaElement>;
+      };
+    }
+  | {
+      type: 'SET_INITIAL_VALUES';
+      payload: {
+        field: keyof FormValues;
+        value:
+          | string
+          | ChangeEvent<HTMLInputElement>
+          | ChangeEvent<HTMLTextAreaElement>;
       };
     }
   | {
@@ -65,6 +88,13 @@ const formReducer = (state: FormState, action: FormAction): FormState => {
         state: {
           ...state.state,
           [action.payload.field]: action.payload.value,
+        },
+      };
+    case 'SET_INITIAL_VALUES':
+      return {
+        ...state,
+        state: {
+          ...initialState.state,
         },
       };
     case 'SET_VALIDATION':

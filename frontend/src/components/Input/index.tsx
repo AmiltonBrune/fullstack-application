@@ -26,7 +26,7 @@ interface InputProps {
   label: string;
   type: string;
   placeholder: string;
-  icon: ReactNode;
+  icon?: ReactNode;
   iconRight?: boolean;
   validationRules: ValidationRules;
   validFields?: DefineFieldProps;
@@ -91,7 +91,8 @@ const Input = ({
     <InputContainer>
       <Label className='poppins-regular'>{label}</Label>
       <InputWrapper>
-        <IconLeft>{icon}</IconLeft>
+        {icon && <IconLeft>{icon}</IconLeft>}
+
         <StyledInput
           className='poppins-regular'
           data-lpignore='true'

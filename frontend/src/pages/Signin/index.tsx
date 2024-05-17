@@ -14,14 +14,20 @@ import StarTitleAndRedirect from '../../components/StarTitleAndRedirect';
 import { useFormContext } from '../../context/Form';
 import { DefineFieldProps } from '../../hooks/useValidation';
 
+import { useAuth } from '../../hooks/auth';
+import { useNavigate } from 'react-router-dom';
+
 interface FormValues {
   email: string;
   password: string;
 }
 
 function Signin() {
+  const { signIn } = useAuth();
+
   const { theme } = useTheme();
   const { width } = useWindowSize();
+  const navigate = useNavigate();
 
   const { state, dispatch, validation } = useFormContext();
 
@@ -32,8 +38,21 @@ function Signin() {
     dispatch({ type: 'SET_VALUE', payload: { field: name, value } });
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    signIn({
+      email: state.email,
+      password: state.password,
+    }).then(() => {
+      dispatch({
+        type: 'SET_INITIAL_VALUES',
+        payload: {
+          field: 'email',
+          value: '',
+        },
+      });
+      navigate('/');
+    });
   };
 
   const isValid = Object.values(validation).every((message) => !message);
@@ -48,7 +67,11 @@ function Signin() {
       <ContentBackgroud />
       <Content>
         {width <= 768 && (
-          <Logo colorTitle={theme.colors.black} position='center' />
+          <Logo
+            colorTitle={theme.colors.black}
+            position='center'
+            isRed={true}
+          />
         )}
 
         <Tille>

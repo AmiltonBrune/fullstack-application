@@ -18,6 +18,7 @@ export const InputWrapper = styled.div`
 
 export const StyledInput = styled.input`
   width: 100%;
+  height: 60px;
   padding: 16px 60px;
   border: 1px solid ${(props) => props.theme.colors.gray};
   border-radius: 10px;
