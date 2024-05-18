@@ -15,6 +15,11 @@ interface DefineFieldProps {
   password?: boolean;
   confirmPassword?: boolean;
   name?: boolean;
+  title?: boolean;
+  description?: boolean;
+  url?: boolean;
+  catgegories?: boolean;
+  thumbnail?: boolean;
 }
 
 interface UseValidationProps {
@@ -30,7 +35,7 @@ const useValidation = ({
     email: true,
     password: true,
     name: true,
-    confirmPassword: true
+    confirmPassword: true,
   },
 }: UseValidationProps) => {
   const { state, dispatch } = useFormContext();
@@ -74,7 +79,7 @@ const useValidation = ({
   };
 
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement>,
+    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>,
     isConfirmPassword: boolean = false
   ) => {
     const { value } = e.target;

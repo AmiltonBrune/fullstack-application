@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent } from 'react';
 
-import { LuLock, LuMail, LuUser } from 'react-icons/lu';
+import { LuLock, LuMail } from 'react-icons/lu';
 
 import Input from '../../components/Input';
 
@@ -12,18 +12,21 @@ import useWindowSize from '../../hooks/useWindowSize';
 import Button from '../../components/Button';
 import StarTitleAndRedirect from '../../components/StarTitleAndRedirect';
 import { useFormContext } from '../../context/Form';
+import { useAuth } from '../../hooks/auth';
+import { useNavigate } from 'react-router-dom';
 
 interface FormValues {
   email: string;
   password: string;
   confirmPassword: string;
-  name: string;
 }
 
 function Signup() {
+  const { signup } = useAuth();
   const { theme } = useTheme();
   const { width } = useWindowSize();
   const { state, dispatch, validation } = useFormContext();
+  const navigate = useNavigate();
 
   const handleChange = (
     name: keyof FormValues,
@@ -34,6 +37,26 @@ function Signup() {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    signup({
+      email: state.email,
+      password: state.password,
+    })
+      .then(() => {
+        dispatch({
+          type: 'SET_INITIAL_VALUES',
+          payload: {
+            field: 'email',
+            value: '',
+          },
+        });
+        alert('usuário cadastrado com sucesso');
+        navigate('/');
+      })
+      .catch(() => {
+        alert('erro ao cadastrar usuário');
+        navigate('/register');
+      })
+      .finally(() => {});
   };
 
   const isValid = Object.values(validation).every((message) => !message);
@@ -43,7 +66,11 @@ function Signup() {
       <ContentBackgroud />
       <Content>
         {width <= 768 && (
-          <Logo colorTitle={theme.colors.black} position='center' />
+          <Logo
+            colorTitle={theme.colors.black}
+            position='center'
+            isRed={true}
+          />
         )}
 
         <StarTitleAndRedirect
@@ -54,16 +81,6 @@ function Signup() {
         />
 
         <Form onSubmit={handleSubmit}>
-          <Input
-            label='Nome'
-            type='text'
-            name='name'
-            placeholder='Digite seu nome'
-            icon={<LuUser size={30} />}
-            validationRules={{ required: true, minLength: 3 }}
-            value={state.name}
-            onChange={(event) => handleChange('name', event)}
-          />
           <Input
             label='Email'
             type='text'

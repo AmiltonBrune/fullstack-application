@@ -1,6 +1,9 @@
 import { createGlobalStyle } from 'styled-components';
 
 export default createGlobalStyle`
+   @import '~slick-carousel/slick/slick.css';
+   @import '~slick-carousel/slick/slick-theme.css';
+   
    * {
       margin: 0;
       padding: 0;
@@ -130,6 +133,11 @@ export default createGlobalStyle`
    font-family: "Poppins", sans-serif;
    font-weight: 900;
    font-style: italic;
+   }
+
+   .crsl {
+      width: 400px;
+      margin: auto;
    }
 
 `;

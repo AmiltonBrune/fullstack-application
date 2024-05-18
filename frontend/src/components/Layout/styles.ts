@@ -7,7 +7,7 @@ import styled from 'styled-components';
  * CT = Content
  */
 
-export const Container = styled.div`
+export const Grid = styled.div`
   display: grid;
   grid-template-columns: 250px auto;
   grid-template-rows: 70px auto;
@@ -19,7 +19,7 @@ export const Container = styled.div`
   height: 100vh;
   min-width: 280px;
 
-  @media (max-width: 600px) {
+  @media (max-width: 768px) {
     grid-template-columns: 100%;
     grid-template-rows: 70px auto;
 
