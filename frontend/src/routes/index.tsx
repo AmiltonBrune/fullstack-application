@@ -9,7 +9,7 @@ import App from './app.routes';
 const Routes: React.FC = () => {
   const { logged } = useAuth();
 
-  return <BrowserRouter>{Boolean(logged) ? <App /> : <Auth />}</BrowserRouter>;
+  return <BrowserRouter>{!logged ? <App /> : <Auth />}</BrowserRouter>;
 };
 
 export default Routes;

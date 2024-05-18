@@ -92,8 +92,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       const data = await getUserData({ token });
 
       if (!data.data.data.user.is_confirmed) {
-        localStorage.removeItem('@vidflex:logged');
         localStorage.removeItem('@vidflex:token');
+        localStorage.setItem('@vidflex:logged', 'false');
 
         alert('Acesse seu email e clique no link para ativar seu acesso');
 
