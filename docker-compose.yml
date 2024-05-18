@@ -1,0 +1,150 @@
+version: '3.8'
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: always
+    hostname: frontend
+    ports:
+      - '3000:80'
+    networks:
+      - frontend
+      - backend
+
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    restart: always
+    hostname: gateway
+    env_file:
+      - .env
+    ports:
+      - '${API_GATEWAY_PORT}:${API_GATEWAY_PORT}'
+    networks:
+      - backend
+      - frontend
+
+  mailer:
+    build:
+      context: ./mailer
+      dockerfile: Dockerfile
+    restart: always
+    hostname: mailer
+    env_file:
+      - .env
+    ports:
+      - '${MAILER_SERVICE_PORT}:${MAILER_SERVICE_PORT}'
+    networks:
+      - backend
+
+  image-service:
+    build:
+      context: ./image-service
+      dockerfile: Dockerfile
+    restart: always
+    hostname: image-service
+    env_file:
+      - .env
+    ports:
+      - '${IMAGE_SERVICE_PORT}:${IMAGE_SERVICE_PORT}'
+    networks:
+      - backend
+    volumes:
+      - ./image-service/uploads:/var/www/image-service/uploads
+
+  permission:
+    build:
+      context: ./permission
+      dockerfile: Dockerfile
+    restart: always
+    hostname: permission
+    env_file:
+      - .env
+    ports:
+      - '${PERMISSION_SERVICE_PORT}:${PERMISSION_SERVICE_PORT}'
+    networks:
+      - backend
+
+  categories:
+    build:
+      context: ./categories
+      dockerfile: Dockerfile
+    restart: always
+    hostname: category
+    env_file:
+      - .env
+    ports:
+      - '${CATEGORY_SERVICE_PORT}:${CATEGORY_SERVICE_PORT}'
+    networks:
+      - backend
+
+  videos:
+    build:
+      context: ./videos
+      dockerfile: Dockerfile
+    restart: always
+    hostname: video
+    env_file:
+      - .env
+    ports:
+      - '${VIDEO_SERVICE_PORT}:${VIDEO_SERVICE_PORT}'
+    networks:
+      - backend
+
+  token:
+    build:
+      context: ./token
+      dockerfile: Dockerfile
+    restart: always
+    hostname: token
+    env_file:
+      - .env
+    ports:
+      - '${TOKEN_SERVICE_PORT}:${TOKEN_SERVICE_PORT}'
+    networks:
+      - backend
+    depends_on:
+      - db
+
+  user:
+    build:
+      context: ./user
+      dockerfile: Dockerfile
+    restart: always
+    hostname: user
+    env_file:
+      - .env
+    ports:
+      - '${USER_SERVICE_PORT}:${USER_SERVICE_PORT}'
+    networks:
+      - backend
+    depends_on:
+      - mailer
+      - db
+
+  db:
+    image: 'mongo:3.7'
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
+      MONGO_USER: ${MONGO_USER}
+      MONGO_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_DSN: 'mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@db:27017' # Usando o nome do serviço `db`
+    volumes:
+      - './db/data/db-files:/data/db'
+      - './db/init/:/docker-entrypoint-initdb.d/'
+    ports:
+      - '27017:27017'
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+  frontend:
+    name: infrastructure
+    external: true
