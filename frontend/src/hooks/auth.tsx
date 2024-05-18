@@ -41,7 +41,11 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     return !!isLogged;
   });
   const [user, setUser] = useState<any>({});
-  const [isVerify, setIsVerify] = useState(false);
+  const [isVerify, setIsVerify] = useState(() => {
+    const verify = localStorage.getItem('@vidflex:verify');
+
+    return !!verify;
+  });
   const { setIsShowinLoading } = useModal();
 
   const signIn = async ({ email, password }: SigninProps): Promise<void> => {
@@ -87,14 +91,14 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       const token = localStorage.getItem('@vidflex:token');
       const data = await getUserData({ token });
 
-      // if (!data.data.data.user.is_confirmed) {
-      //   localStorage.removeItem('@vidflex:logged');
-      //   localStorage.removeItem('@vidflex:token');
+      if (!data.data.data.user.is_confirmed) {
+        localStorage.removeItem('@vidflex:logged');
+        localStorage.removeItem('@vidflex:token');
 
-      //   alert('Acesse seu email e clique no link para ativar seu acesso');
+        alert('Acesse seu email e clique no link para ativar seu acesso');
 
-      //   setLogged(false);
-      // }
+        setLogged(false);
+      }
 
       localStorage.setItem(
         '@vidflex:user',
@@ -117,10 +121,19 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     code,
   }: ConfirmationRegisterUserProps) => {
     try {
+      const data = localStorage.getItem('@vidflex:verify');
+
+      if (data && Boolean(JSON.parse(data))) {
+        setIsVerify(true);
+      }
+
       await confirmMail({ code });
+
+      localStorage.setItem('@vidflex:verify', 'true');
       setIsVerify(true);
     } catch (error) {
       setIsVerify(false);
+      localStorage.removeItem('@vidflex:verify');
       alert('Erro ao verificar usuário');
     }
   };
